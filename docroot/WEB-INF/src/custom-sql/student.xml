@@ -1,0 +1,174 @@
+<custom-sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.findStudents">
+		<![CDATA[   			
+			SELECT 
+				DISTINCT u.*
+			FROM 
+				user_ u
+			INNER JOIN 
+				users_groups ug 
+					ON u.userId = ug.userId
+			INNER JOIN 
+				lms_course co 
+					ON co.groupCreatedId = ug.groupId
+			LEFT JOIN 
+				usergrouprole ur 
+					ON ug.userId = ur.userId AND ur.groupId = ug.groupId AND ur.roleId= ?
+			LEFT JOIN 
+				usergrouprole urE 
+					ON ug.userId = urE.userId AND urE.groupId = ug.groupId AND urE.roleId = ?
+			LEFT JOIN 
+				usergrouprole urI
+					ON ug.userId = urI.userId AND urI.groupId = ug.groupId AND urI.roleId = ?					
+			[$JOINCOURSERESULT$]
+			[$JOINTEAM$]
+			WHERE 
+				ur.userId IS NULL AND urE.userId IS NULL AND urI.userId IS NULL 
+				[$WHERECOURSEOREDITIONS$]
+				[$WHERESTATUS$]
+				[$WHERESEARCH$]
+			ORDER BY [$ORDERBY$]
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.whereUserStatus">
+		<![CDATA[   			
+			AND u.status = ?
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.countStudents">
+		<![CDATA[   			
+			SELECT 
+				COUNT(DISTINCT u.userId) AS COUNT_VALUE
+			FROM 
+				user_ u
+			INNER JOIN 
+				users_groups ug 
+					ON u.userId = ug.userId
+			INNER JOIN 
+				lms_course co 
+					ON co.groupCreatedId = ug.groupId
+			LEFT JOIN 
+				usergrouprole ur 
+					ON ug.userId = ur.userId AND ur.groupId = ug.groupId AND ur.roleId= ?
+			LEFT JOIN 
+				usergrouprole urE 
+					ON ug.userId = urE.userId AND urE.groupId = ug.groupId AND urE.roleId = ?
+			LEFT JOIN 
+				usergrouprole urI
+					ON ug.userId = urI.userId AND urI.groupId = ug.groupId AND urI.roleId = ?	
+			[$JOINCOURSERESULT$]
+			[$JOINTEAM$]
+			WHERE 
+				ur.userId IS NULL AND urE.userId IS NULL AND urI.userId IS NULL
+				[$WHERECOURSEOREDITIONS$]
+				[$WHERESTATUS$]
+				[$WHERESEARCH$]
+		]]>
+	</sql>
+	
+		<sql id="com.liferay.lms.service.persistence.CourseFinder.countStudentsByGenere">
+		<![CDATA[   			
+			SELECT 
+				COUNT(DISTINCT u.userId) AS COUNT_VALUE
+			FROM 
+				user_ u
+			INNER JOIN 
+				users_groups ug 
+					ON u.userId = ug.userId
+			INNER JOIN 
+				lms_course co 
+					ON co.groupCreatedId = ug.groupId
+			LEFT JOIN 
+				usergrouprole ur 
+					ON ug.userId = ur.userId AND ur.groupId = ug.groupId AND ur.roleId= ?
+			LEFT JOIN 
+				usergrouprole urE 
+					ON ug.userId = urE.userId AND urE.groupId = ug.groupId AND urE.roleId = ?
+			LEFT JOIN 
+				usergrouprole urI
+					ON ug.userId = urI.userId AND urI.groupId = ug.groupId AND urI.roleId = ?
+			[$JOINCOURSERESULT$]
+			[$JOINTEAM$]
+			[$JOINCONTACT$]
+			WHERE 
+				ur.userId IS NULL AND urE.userId IS NULL  AND urI.userId IS NULL
+				[$WHERECOURSEOREDITIONS$]
+				[$WHERESTATUS$]
+				[$WHERESEARCH$]
+		]]>
+	</sql>
+	
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.whereCourseId">
+		<![CDATA[ 
+			AND co.courseId = ?
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.whereEditions">
+		<![CDATA[ 
+			AND (co.courseId = ? OR co.parentCourseId = ?)
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.innerStarted">
+		<![CDATA[ 
+			INNER JOIN lms_courseresult cr ON co.courseId = cr.courseId AND cr.userId = u.userId AND cr.startDate IS NOT NULL
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.innerFinished">
+		<![CDATA[ 
+			INNER JOIN lms_courseresult cr ON co.courseId = cr.courseId AND cr.userId = u.userId AND cr.passedDate IS NOT NULL
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.innerPassed">
+		<![CDATA[ 
+			INNER JOIN lms_courseresult cr ON co.courseId = cr.courseId AND cr.userId = u.userId AND cr.passedDate IS NOT NULL AND cr.passed = true
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.innerFailed">
+		<![CDATA[ 
+			INNER JOIN lms_courseresult cr ON co.courseId = cr.courseId AND cr.userId = u.userId AND cr.passedDate IS NOT NULL AND cr.passed = false
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.whereUserSearch">
+		<![CDATA[ 
+			AND 
+				(
+					[$WHEREFIRSTNAME$]
+					[$WHERELASTNAME$]
+					[$WHERESCREENNAME$]
+					[$WHEREEMAILADDRESS$]
+					[$DEFAULT$]
+				)
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.whereFirstName">
+		<![CDATA[
+			(u.firstName LIKE ?) [$AND_OR_CONNECTOR$]
+		]]>
+	</sql>
+	
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.whereLastName">
+		<![CDATA[
+			(u.lastName LIKE ?) [$AND_OR_CONNECTOR$]
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.whereScreenName">
+		<![CDATA[
+			(u.screenName LIKE ?) [$AND_OR_CONNECTOR$]
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.whereEmailAddress">
+		<![CDATA[
+			(u.emailAddress LIKE ?) [$AND_OR_CONNECTOR$]
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.innerJoinTeam">
+		<![CDATA[
+			INNER JOIN users_teams ON users_teams.userId = u.userId AND users_teams.teamId IN ([$TEAMIDS$])
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseFinder.innerJoinContact">
+		<![CDATA[
+			INNER JOIN contact_ ON contact_.contactId  = u.contactId AND contact_.male = [$GENERE$]
+		]]>
+	</sql>
+</custom-sql>

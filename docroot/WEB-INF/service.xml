@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_0_0.dtd">
+<service-builder package-path="com.liferay.lms">
+	<author>TLS</author>
+	<namespace>Lms</namespace>
+	
+	<entity name="LearningActivity" uuid="true" local-service="true" remote-service="true" json-enabled="false" 
+			persistence-class="com.liferay.lms.service.persistence.LearningActivityCustomPersistenceImpl" >
+
+		<!-- PK fields -->
+		<column name="actId" type="long" primary="true" />
+		
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+
+
+		<!-- Other fields -->
+
+		<column name="title" type="String" localized="true"/>
+		<column name="description" type="String" localized="true"/>
+		<column name="typeId" type="int" />
+		<column name="startdate" type="Date" />
+		<column name="enddate" type="Date" />
+		<column name="precedence" type="long" />
+
+		<column name="tries" type="long" convert-null="false"></column>
+		<column name="passpuntuation" type="int"></column>
+		<column name="priority" type="long"></column>
+		<column name="moduleId" type="long"></column>
+		<column name="extracontent" type="String"></column>
+		<column name="feedbackCorrect" type="String"></column>
+		<column name="feedbackNoCorrect" type="String"></column>
+		<column name="weightinmodule" type="long"></column>
+		<column name="commentsActivated" type="boolean"></column>
+		<column name="linkedActivityId" type="long"></column>
+		<column name="improve" type="boolean"></column>
+		
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="moduleId" />
+			<order-column name="priority" />
+		</order>
+		<finder name="g" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="g_t" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="typeId" />
+		</finder>
+		<finder name="g_m" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="weightinmodule" />
+		</finder>
+		<finder name="m" return-type="Collection">
+			<finder-column name="moduleId" />
+		</finder>
+		
+		<finder name="ModuleId_Weightinmodule" return-type="Collection">
+			<finder-column name="moduleId" />
+			<finder-column name="weightinmodule" comparator="&gt;" />
+		</finder>
+		
+		<finder name="Precedence" return-type="Collection">
+			<finder-column name="precedence" />
+		</finder>
+		<finder name="ModuleIdPriorityLessThan" return-type="Collection">
+			<finder-column name="moduleId" />
+			<finder-column name="priority" comparator="&lt;"/>
+		</finder>
+		<finder name="ModuleIdPriorityGreaterThan" return-type="Collection">
+			<finder-column name="moduleId" />
+			<finder-column name="priority" comparator="&gt;"/>
+		</finder>
+		<finder name="CompanyIdTypeId" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="typeId" />
+		</finder>
+		<finder name="TypeId" return-type="Collection">
+			<finder-column name="typeId" />
+		</finder>
+				
+		<reference package-path="com.liferay.portal" entity="User" />
+		<reference package-path="com.liferay.portal" entity="Role" />
+		<reference package-path="com.liferay.portal" entity="Team" />
+		<reference package-path="com.liferay.portal" entity="ResourcePermission" />
+		<reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+		<reference package-path="com.liferay.portlet.social" entity="SocialActivity" />
+		<reference package-path="com.liferay.portlet.ratings" entity="RatingsStats" />
+
+	</entity>
+	
+	<entity name="TestQuestion" uuid="true" local-service="true" remote-service="true" json-enabled="false">
+
+		<!-- PK fields -->
+
+		<column name="questionId" type="long" primary="true" />
+		<column name="actId" type="long" />
+		<column name="text" type="String" />
+		<column name="questionType" type="long" />
+		<column name="weight" type="long" />	
+		<column name="penalize" type="boolean" />	
+		<column name="extracontent" type="String"></column>	
+		<order by="asc">
+			<order-column name="questionId"  />
+		</order>
+		<finder name="ac" return-type="Collection">
+			<finder-column name="actId" />
+		</finder>
+		<finder name="Uuid_ActId" return-type="TestQuestion" unique="true">
+			<finder-column name="uuid" />
+			<finder-column name="actId" />
+		</finder>
+	</entity>
+	
+	<entity name="P2pActivity" uuid="true" local-service="true" remote-service="false" json-enabled="false">
+		<!-- PK fields -->
+		<column name="p2pActivityId" type="long" primary="true" />
+		<column name="actId" type="long" />
+		<column name="userId" type="long" />
+		<column name="fileEntryId" type="long" />
+		<column name="countCorrections" type="long" />
+		<column name="description" type="String" />
+		<column name="date" type="Date" />
+        <column name="asignationsCompleted" type="boolean" />
+		<order by="asc">
+			<order-column name="countCorrections" />
+			<order-column name="p2pActivityId"  />
+		</order>
+		<finder name="ActIdAndUserId" return-type="Collection">
+			<finder-column name="actId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="ActId" return-type="Collection">
+			<finder-column name="actId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>	
+		<finder name="asignationsCompleted"  return-type="Collection">
+			<finder-column name="asignationsCompleted"  />
+		</finder>			
+	</entity>
+	
+	<entity name="P2pActivityCorrections" uuid="true" local-service="true" remote-service="false" json-enabled="false">
+		<column name="p2pActivityCorrectionsId" type="long" primary="true" />
+		<column name="p2pActivityId" type="long" />
+		<column name="userId" type="long" />
+		<column name="actId" type="long" />
+		<column name="description" type="String" />
+		<column name="date" type="Date" />
+		<column name="fileEntryId" type="long" />
+		<column name="result" type="long" />
+		
+		<finder name="P2pActivityId" return-type="Collection">
+			<finder-column name="p2pActivityId" />
+		</finder>
+		<finder name="ActIdAndUserId" return-type="Collection">
+			<finder-column name="actId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="P2pActivityIdAndUserId" return-type="Collection">
+			<finder-column name="p2pActivityId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>			
+		<finder name="P2pActivityIdAndActIdDateNotNull" return-type="Collection" where="date IS NOT null">
+			<finder-column name="p2pActivityId" />
+			<finder-column name="actId" />
+		</finder>		
+	</entity>
+	
+	<entity name="TestAnswer" uuid="true" local-service="true"
+		remote-service="true" json-enabled="false">
+		<column name="answerId" type="long" primary="true" />
+		<column name="questionId" type="long" />
+		<column name="actId" type="long" />
+		<column name="precedence" type="long" />
+		<column name="answer" type="String" />
+		<column name="isCorrect" type="boolean" />
+		<column name="feedbackCorrect" type="String" />
+		<column name="feedbacknocorrect" type="String" />
+		<order by="asc">
+			<order-column name="answerId" />
+		</order>
+		<finder name="ac" return-type="Collection">
+			<finder-column name="actId" />
+		</finder>
+		<finder name="q" return-type="Collection">
+			<finder-column name="questionId" />
+		</finder>
+		<finder name="Uuid_ActId" return-type="TestAnswer" unique="true">
+			<finder-column name="uuid" />
+			<finder-column name="actId" />
+		</finder>
+	</entity>
+	
+	<entity name="LearningActivityTry" uuid="true" local-service="true"
+		remote-service="true" json-enabled="false" cache-enabled="false">
+		<column name="latId" type="long" primary="true" />
+		<column name="actId" type="long" />
+		<column name="userId" type="long" />
+		<column name="startDate" type="Date" />
+		<column name="result" type="long" />
+		<column name="endDate" type="Date" convert-null="true"/>
+		<column name="endUserDate" type="Date" /><!-- Date of last user interaction -->
+		<column name="tryData" type="String" />
+		<column name="tryResultData" type="String" />
+		<column name="comments" type="String" />
+        <order>
+            <order-column name="latId"></order-column>
+        </order>
+		
+		<finder name="act" return-type="Collection">
+			<finder-column name="actId" />
+		</finder>
+		<finder name="act_u" return-type="Collection">
+			<finder-column name="actId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>		
+		<finder name="ActIdNotMultipleUserIdStarted" return-type="Collection" where="startDate IS NOT null">
+			<finder-column name="actId" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!=" ></finder-column>
+		</finder>	
+		<finder name="ActIdMultipleUserIdStarted" return-type="Collection" where="startDate IS NOT null">
+			<finder-column name="actId" />
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="ActIdStarted" return-type="Collection" where="startDate IS NOT null">
+			<finder-column name="actId" />
+		</finder>
+	</entity>
+
+
+	
+	<entity name="LearningActivityResult" uuid="true" local-service="true"
+		remote-service="true" json-enabled="false" cache-enabled="false" persistence-class="com.liferay.lms.service.persistence.LearningActivityResultPersistenceImpl">
+
+		<column name="larId" type="long" primary="true" />
+		<column name="actId" type="long" />
+		<column name="userId" type="long" />
+		<column name="result" type="long" />
+		<column name="startDate" type="Date" />
+		<column name="endDate" type="Date" convert-null="true"/>
+		<column name="latId" type="long" />
+		<column name="comments" type="String" />
+		<column name="passed" type="boolean" />
+        <order>
+            <order-column name="larId"></order-column>
+        </order>
+		
+		<finder name="act_user" return-type="LearningActivityResult" unique="true">
+			<finder-column name="actId" />
+			<finder-column name="userId" />
+		</finder>
+		<!-- Creamos este finder porque al crear los de abajo se ha quitado la restriccion de unique, así lo añadimos -->
+		<finder name="UserIdActId" return-type="LearningActivityResult" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="actId" />
+		</finder>
+		<finder name="ap" return-type="Collection">
+			<finder-column name="actId" />
+			<finder-column name="passed" />
+		</finder>
+		<finder name="apd" return-type="Collection">
+			<finder-column name="actId" />
+			<finder-column name="passed" />
+			<finder-column name="endDate" />
+		</finder>
+		<finder name="ac" return-type="Collection">
+			<finder-column name="actId" />
+		</finder>
+		<finder name="user" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="ActIdNotMultipleUserId" return-type="Collection" >
+			<finder-column name="actId" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>	
+		<finder name="ActIdNotMultipleUserIdStarted" return-type="Collection">
+			<finder-column name="actId" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+		<finder name="ActIdStarted" return-type="Collection"  where="startDate IS NOT null">
+			<finder-column name="actId" />
+		</finder>
+		<finder name="ActIdPassedNotMultipleUserId" return-type="Collection" >
+			<finder-column name="actId" />
+			<finder-column name="passed" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+		<finder name="ActIdNotMultipleUserIdFinished" return-type="Collection" where="endDate IS NOT null">
+			<finder-column name="actId" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+		<finder name="ActIdFinished" return-type="Collection" where="endDate IS NOT null">
+			<finder-column name="actId" />
+		</finder>
+		<finder name="ActIdPassedNotMultipleUserIdFinished" return-type="Collection" where="endDate IS NOT null">
+			<finder-column name="actId" />
+			<finder-column name="passed" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+		<finder name="ActIdPassedMultipleUserId" return-type="Collection">
+			<finder-column name="actId" />
+			<finder-column name="passed" />
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="ActIdPassedMultipleUserIdFinished" return-type="Collection" where="endDate IS NOT null">
+			<finder-column name="actId" />
+			<finder-column name="passed" />
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="ActIdPassedFinished" return-type="Collection" where="endDate IS NOT null">
+			<finder-column name="actId" />
+			<finder-column name="passed" />
+		</finder>
+		<finder name="ActIdMultipleUserIdStarted" return-type="Collection" >
+			<finder-column name="actId" />
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="ActIdMultipleUserIdFinished" return-type="Collection" where="endDate IS NOT null">
+			<finder-column name="actId" />
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="ActIdPassedEndDateNull" return-type="Collection" where="endDate IS null">
+			<finder-column name="actId" />
+			<finder-column name="passed" />
+		</finder>
+	</entity>
+	
+	<entity name="Module" local-service="true" remote-service="true" uuid="true" json-enabled="false">
+		<!-- Primary key column -->
+		<column name="moduleId" type="long" primary="true" />
+
+		<!-- Foreign key columns -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other columns -->
+		<column name="title" type="String" localized="true"/>
+		<column name="description" type="String" localized="true"/>
+		<column name="ordern" type="long" />
+        <column name="startDate" type="Date"></column>
+        <column name="endDate" type="Date"></column>
+        <column name="icon" type="long"></column>
+        <column name="precedence" type="long" />
+        <column name="allowedTime" type="long" />
+		
+		<order by="asc">
+			<order-column name="ordern" />
+		</order>
+		<!-- Finder Methods Standard -->
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="UserIdGroupId" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId"/>
+		</finder>
+		
+		<reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+		
+	</entity>
+	
+	<entity name="ModuleResult" local-service="true" json-enabled="false" cache-enabled="false">
+		<column name="moduleId" type="long" primary="false"></column>
+		<column name="result" type="long"></column>
+		<column name="comments" type="String"></column>
+		<column name="userId" type="long" primary="false"></column>
+		<column name="startDate" type="Date" />
+		<column name="passed" type="boolean"></column>
+		<column name="mrId" type="long" primary="true"></column>
+		<column name="passedDate" type="Date" convert-null="true"/>
+        <order>
+            <order-column name="mrId"></order-column>
+        </order>
+		<finder name="mu" return-type="ModuleResult" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="moduleId" />	
+		</finder>
+		<finder name="m" return-type="Collection">
+			<finder-column name="moduleId" />
+		</finder>
+		<finder name="mp" return-type="Collection">
+			<finder-column name="moduleId" />
+			<finder-column name="passed" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>			
+		<finder name="ModuleIdMultipleUserId" return-type="Collection" >
+			<finder-column name="moduleId" />
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>	
+		<finder name="ModuleIdPassedMultipleUserId" return-type="Collection" >
+			<finder-column name="moduleId" />
+			<finder-column name="passed" />
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="ModuleIdMultipleUserIdFinished" return-type="Collection" >
+			<finder-column name="moduleId" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="ModuleIdFinished" return-type="Collection" >
+			<finder-column name="moduleId" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+		</finder>
+		<finder name="ModuleIdPassedFinished" return-type="Collection">
+			<finder-column name="moduleId" />
+			<finder-column name="passed" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+		</finder>
+		<finder name="ModuleIdNotMultipleUserId" return-type="Collection" >
+			<finder-column name="moduleId" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>	
+		<finder name="ModuleIdPassedNotMultipleUserId" return-type="Collection" >
+			<finder-column name="moduleId" />
+			<finder-column name="passed" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+		<finder name="ModuleIdNotMultipleUserIdFinished" return-type="Collection" >
+			<finder-column name="moduleId" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+		<finder name="ModuleIdPassedNotMultipleUserIdFinished" return-type="Collection">
+			<finder-column name="moduleId" />
+			<finder-column name="passed" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+	</entity>
+		<entity name="Competence" local-service="true" remote-service="true" uuid="true" json-enabled="false">
+		<!-- Primary key column -->
+		<column name="competenceId" type="long" primary="true" />
+		<!-- Foreign key columns -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />	
+		<column name="title" type="String" localized="true"/>
+		<column name="description" type="String" localized="true"/>
+		<column name="page" type="String" />
+        <column name="generateCertificate" type="boolean"></column>
+		<column name="diplomaTemplate" type="String" localized="true"/>
+		<column name="diplomaBackground" type="long" />
+		<column name="diplomaAdditional" type="long" />
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		</entity>
+		<entity name="UserCompetence" local-service="true" remote-service="true" uuid="true" json-enabled="false">
+			<column name="usercompId" type="long"  primary="true"/>
+			<column name="userId" type="long"  />
+			<column name="competenceId" type="long" />
+			<column name="compDate" type="Date" />
+        	<column name="courseId" type="long"></column>
+			<finder name="UserId" return-type="Collection">
+				<finder-column name="userId" />
+			</finder>
+			<finder name="UserIdCompetenceId" return-type="UserCompetence">
+				<finder-column name="userId" />
+				<finder-column name="competenceId" />
+			</finder>
+			<finder name="UserIdCompetenceIdCourseId" return-type="UserCompetence" unique="true">
+				<finder-column name="userId" />
+				<finder-column name="competenceId" />
+				<finder-column name="courseId" />
+			</finder>			
+	    </entity>
+	    	<entity name="CourseCompetence" local-service="true" remote-service="true" uuid="true" json-enabled="false">
+	    		<column name="CourcompetenceId" type="long" primary="true" />
+	    		<column name="courseId" type="long"  />
+				<column name="competenceId" type="long"/>
+				<column name="condition" type="boolean"/>
+				<finder name="courseId" return-type="Collection">
+					<finder-column name="courseId" />
+					<finder-column name="condition" />
+				</finder>
+				<finder name="CourseCompetenceCondition" return-type="CourseCompetence" unique="true">
+					<finder-column name="courseId" />
+					<finder-column name="competenceId" />
+					<finder-column name="condition" />
+				</finder>
+			</entity>
+	<entity name="Course" local-service="true" remote-service="true" uuid="true" json-enabled="false">
+		<!-- Primary key column -->
+		<column name="courseId" type="long" primary="true" />
+		<column name="parentCourseId" type="long" />
+		<!-- Foreign key columns -->
+		<column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="groupCreatedId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+		
+		<!-- Other columns -->
+		<column name="title" type="String" localized="true"/>
+		<column name="description" type="String" localized="true"/>
+		<column name="friendlyURL" type="String"/>
+	    <column name="startDate" type="Date"></column>
+        <column name="endDate" type="Date"></column>
+        <column name="icon" type="long"></column>
+        <column name="CourseEvalId" type="long"></column>
+        <column name="CourseExtraData" type="String"></column>
+        <column name="closed" type="boolean"></column>
+        <column name="maxusers" type="long"></column>
+        <column name="calificationType" type="long"></column>
+        <column name="inscriptionType" type="long" />
+		<column name="welcome" type="boolean"/>
+		<column name="welcomeMsg" type="String"/>
+		<column name="welcomeSubject" type="String"/>
+		<column name="welcomeAddToCalendar" type="boolean"/>
+		<column name="deniedInscription" type="boolean"/>
+		<column name="deniedInscriptionMsg" type="String"/>
+		<column name="deniedInscriptionSubject" type="String"/>
+		<column name="goodbye" type="boolean"/>
+		<column name="goodbyeMsg" type="String"/>
+		<column name="goodbyeSubject" type="String"/>		
+		<column name="isLinked" type="boolean"/>
+		<column name="executionStartDate" type="Date"></column>
+        <column name="executionEndDate" type="Date"></column>
+        
+ 		<order by="asc">
+			<order-column name="courseId" />
+		</order>
+		<!-- Finder Methods Standard -->
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="ParentCourseId" return-type="Collection">
+			<finder-column name="parentCourseId" />
+		</finder>
+		<finder name="GroupIdParentCourseId" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="parentCourseId" />
+		</finder>
+		<finder name="CompanyParentCourseId" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="parentCourseId"  />
+		</finder>
+		<finder name="GroupIdClosed" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="closed" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="CompanyIdClosed" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="closed" />
+		</finder>
+		<finder name="GroupCreatedId" return-type="Course">
+			<finder-column name="groupCreatedId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="UserIdGroupId" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="FriendlyURL" return-type="Course" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="friendlyURL" />
+		</finder>
+
+		<reference package-path="com.liferay.portal" entity="User" />
+		<reference package-path="com.liferay.portal" entity="Group" />
+		<reference package-path="com.liferay.portal" entity="UserGroupRole" />
+		<reference package-path="com.liferay.portal" entity="Layout" />
+		<reference package-path="com.liferay.portal" entity="LayoutSet" />
+		<reference package-path="com.liferay.portal" entity="LayoutSetPrototype" />
+		<reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+		<reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
+		<reference package-path="com.liferay.portlet.ratings"
+			entity="RatingsStats" />
+	</entity>
+	
+	<entity name="CourseResult" local-service="true" json-enabled="false" cache-enabled="false">
+		<column name="crId" type="long" primary="true"></column>
+		<column name="courseId" type="long" primary="false"></column>
+		<column name="result" type="long"></column>
+		<column name="comments" type="String"></column>
+		<column name="userId" type="long" primary="false"></column>
+		<column name="passed" type="boolean"></column>
+		<column name="registrationDate" type="Date" />
+		<column name="unRegistrationDate" type="Date" />
+		<column name="startDate" type="Date" />
+		<column name="passedDate" type="Date" convert-null="true"/>
+		<column name="allowStartDate" type="Date"/>
+		<column name="allowFinishDate" type="Date"/>
+        <column name="extraData" type="String"></column>
+        
+        <!-- Audit fields -->
+        <column name="companyId" type="long" />
+		<column name="userModifiedId" type="long" />
+        
+		<finder name="uc" return-type="CourseResult" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="courseId" />
+		</finder>
+		<finder name="c" return-type="Collection">
+			<finder-column name="courseId" />
+			<finder-column name="passed" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>	
+		<finder name="CourseId" return-type="Collection">
+			<finder-column name="courseId" />
+		</finder>	
+		<finder name="CourseIdPassedMultipleUserId" return-type="Collection" >
+			<finder-column name="courseId" />
+			<finder-column name="passed" />
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="CourseIdMultipleUserIdStarted" return-type="Collection" where="startDate IS NOT null">
+			<finder-column name="courseId" />
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="CourseIdMultipleUserIdFinished" return-type="Collection" >
+			<finder-column name="courseId" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="CourseIdStarted" return-type="Collection" where="startDate IS NOT null">
+			<finder-column name="courseId" />
+		</finder>
+		<finder name="CourseIdFinished" return-type="Collection">
+			<finder-column name="courseId" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+		</finder>
+		<finder name="CourseIdPassedMultipleUserIdFinished" return-type="Collection" >
+			<finder-column name="courseId" />
+			<finder-column name="passed" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+			<finder-column name="userId" arrayable-operator="OR" comparator="="></finder-column>
+		</finder>
+		<finder name="CourseIdPassedFinished" return-type="Collection">
+			<finder-column name="courseId" />
+			<finder-column name="passed" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+		</finder>
+		<finder name="CourseIdPassedNotMultipleUserId" return-type="Collection" >
+			<finder-column name="courseId" />
+			<finder-column name="passed" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+		<finder name="CourseIdNotMultipleUserIdStarted" return-type="Collection" where="startDate IS NOT null">
+			<finder-column name="courseId" />
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+		<finder name="CourseIdNotMultipleUserIdFinished" return-type="Collection">
+			<finder-column name="courseId" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+		<finder name="CourseIdPassedNotMultipleUserIdFinished" return-type="Collection">
+			<finder-column name="courseId" />
+			<finder-column name="passed" />
+			<finder-column name="passedDate" comparator="IS NOT"/>
+			<finder-column name="userId" arrayable-operator="AND" comparator="!="></finder-column>
+		</finder>
+	</entity>
+	
+	<entity name="CheckP2pMailing" local-service="true" json-enabled="false" remote-service="false">
+		<column name="checkP2pId" type="long" primary="true"></column>
+		<column name="actId" type="long"></column>
+		<column name="date" type="Date"></column>
+		
+		<finder name="actId" return-type="CheckP2pMailing">
+			<finder-column name="actId" />
+		</finder>
+	</entity>
+	
+    <entity name="LmsPrefs" local-service="true" remote-service="false" json-enabled="false">
+        <column name="companyId" type="long" primary="true"></column>
+        <column name="teacherRole" type="long"></column>
+    	<column name="editorRole" type="long"></column>   
+    	<column name="inspectorRole" type="long"></column>      
+        <column name="lmsTemplates" type="String"></column>
+        <column name="activities" type="String"></column>
+        <column name="courseevals" type="String"></column>
+        <column name="scoretranslators" type="String"></column>
+        <column name="inscriptionTypes" type="String" />
+        <column name="usersResults" type="long"></column>
+        <column name="debugScorm" type="boolean"></column>
+        <column name="hasAPILicence" type="boolean"></column>
+        <column name="showHideActivity" type="boolean"></column>
+        <column name="viewCoursesFinished" type="boolean"></column>
+    </entity>
+        
+	<entity name="SurveyResult" uuid="true" local-service="true" remote-service="false" json-enabled="false">
+		<column name="surveyResultId" type="long" primary="true" />
+		<column name="actId" type="long" />
+		<column name="latId" type="long" />
+		<column name="questionId" type="long" />
+		<column name="answerId" type="long" />
+		<column name="userId" type="long" />
+		<column name="freeAnswer" type="String"/>		
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="ActId" return-type="Collection">
+			<finder-column name="actId" />
+		</finder>
+		<finder name="QuestionIdActId"	return-type="Collection">
+			<finder-column name="questionId" />
+			<finder-column name="actId" />
+		</finder>
+		<finder name="QuestionId"	return-type="Collection">
+			<finder-column name="questionId" />
+		</finder>
+		<finder name="AnswerIdQuestionId"	return-type="Collection">
+			<finder-column name="answerId" />
+			<finder-column name="questionId" />
+		</finder>
+		<finder name="QuestionIdActIdLatId"	return-type="SurveyResult">
+			<finder-column name="questionId" />
+			<finder-column name="actId" />
+			<finder-column name="latId" />
+		</finder>		
+	</entity>  
+	      
+    <entity name="AuditEntry" local-service="true" remote-service="false">
+    	<column name="auditId" type="long" primary="true" />
+    	<column name="auditDate" type="Date" primary="false" />
+	    <column name="companyId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userId" type="long" />
+		<column name="classname" type="String" />
+		<column name="action" type="String" />
+		<column name="extradata" type="String" />
+        <column name="classPK" type="long"></column>
+        <column name="associationClassPK" type="long"></column>
+        <order by="desc">
+			<order-column name="auditDate" />
+		</order>
+        <finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="U_G" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="groupId" />
+		</finder>
+			<finder name="U_G_c" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="groupId" />
+			<finder-column name="classname" />
+		</finder>
+		<finder name="CN_CP" return-type="Collection">
+			<finder-column name="classname" />
+			<finder-column name="classPK" />
+		</finder>
+    </entity>   
+    <entity name="Schedule" local-service="true" remote-service="false" json-enabled="false">
+        <column name="secheduleId" type="long" primary="true"></column>
+        <column name="teamId" type="long"></column>
+    	<column name="startDate" type="Date"></column>     
+        <column name="endDate" type="Date"></column>
+        <finder name="TeamId" return-type="Sechedule">
+			<finder-column name="teamId" />
+		</finder>
+    </entity>
+    <entity name="ActivityTriesDeleted" local-service="true" remote-service="false">
+    	<column name="activityTriesDeletedId" type="long" primary="true"></column>
+    	<column name="groupId" type="long"></column>
+    	<column name="actId" type="long"></column>
+    	<column name="userId" type="long"></column>
+    	<column name="startDate" type="Date"></column> 
+    	<column name="endDate" type="Date"></column>
+    	<column name="status" type="int" />
+    	<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="ActIdStatus" return-type="Collection">
+			<finder-column name="actId" />
+			<finder-column name="status" />
+		</finder>
+    </entity>
+    <entity name="AuditLogger" local-service="true" remote-service="true">
+    </entity>
+    <entity name="UserCertificateDownload" local-service="true" remote-service="false">
+    	<column name="userId" type="long" primary="true" />
+    	<column name="courseId" type="long" primary="true" />
+    	<column name="competenceId" type="long" primary="true" />
+    	<column name="downloadDate" type="Date" />
+    </entity>
+     <entity name="AsynchronousProcessAudit" local-service="true" remote-service="false" cache-enabled="false">
+    	<column name="asynchronousProcessAuditId" type="long" primary="true"></column>
+    	<column name="companyId" type="long"></column>
+    	<column name="type" type="String"></column>
+    	<column name="classNameId" type="long"></column>
+		<column name="classPK" type="long"></column>
+    	<column name="userId" type="long"></column>
+    	<column name="createDate" type="Date"></column> 
+    	<column name="endDate" type="Date"></column>
+    	<column name="status" type="int" />
+    	<column name="statusMessage" type="String" localized="true"/>
+    	<column name="extraContent" type="String" />
+    	
+    	<finder name="CompanyIdClassNameIdClassPKStatus" return-type="Collection">
+			<finder-column name="companyId"/>
+			<finder-column name="classNameId"/>
+			<finder-column name="classPK"/>
+			<finder-column name="status"/>
+		</finder>
+    </entity>
+    
+    <entity name="CourseType"  local-service="true" remote-service="true" json-enabled="false">
+		<!-- PK fields -->
+		<column name="courseTypeId" type="long" primary="true"/>
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+		<!-- Description fields  -->
+		<column name="name" type="String" localized="true"/>
+		<column name="description" type="String" localized="true"/>
+		<column name="iconId" type="long"></column>
+		<column name="classNameId" type="long"></column>
+		<column name="active" type="boolean"></column>
+		
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId"/>
+		</finder>
+		<finder name="CompanyIdActive" return-type="Collection">
+			<finder-column name="companyId"/>
+			<finder-column name="active"/>
+		</finder>
+		<finder name="CompanyIdClassNameIdActive" return-type="Collection">
+			<finder-column name="companyId"/>
+			<finder-column name="classNameId"/>
+			<finder-column name="active"/>
+		</finder>
+	</entity>
+	<entity name="CourseTypeRelation"  local-service="true" remote-service="true" json-enabled="false">
+		<!-- PK fields -->
+		<column name="courseTypeRelationId" type="long" primary="true"/>
+		<!-- Description fields -->
+		<column name="courseTypeId" type="long"/>
+		<column name="classNameId" type="long"/>
+		<column name="classPK" type="long"/>
+		
+		<finder name="CourseTypeId" return-type="Collection">
+			<finder-column name="courseTypeId"/>
+		</finder>
+		<finder name="CourseTypeIdClassNameId" return-type="Collection">
+			<finder-column name="courseTypeId"/>
+			<finder-column name="classNameId"/>
+		</finder>
+		<finder name="CourseTypeIdClassNameIdClassPK" return-type="CourseTypeRelation" unique="true">
+			<finder-column name="courseTypeId"/>
+			<finder-column name="classNameId"/>
+			<finder-column name="classPK"/>
+		</finder>
+	</entity>
+    <exceptions>
+		<exception>NoSuchModule</exception>
+	</exceptions>
+
+</service-builder>

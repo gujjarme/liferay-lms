@@ -1,0 +1,42 @@
+<custom-sql>
+<!-- Query para la administración de cursos cuando eres administrador-->
+
+	<sql id="com.liferay.lms.service.persistence.CourseResultFinder.avgResultCourseId">
+		<![CDATA[   			
+			SELECT SUM(cr.result) / COUNT(1) AS avgResult
+			FROM 
+				user_ u
+			INNER JOIN 
+				users_groups ug ON u.userId = ug.userId
+			INNER JOIN 
+				lms_course co ON co.groupCreatedId = ug.groupId
+			INNER JOIN 
+				lms_courseresult cr ON cr.courseId = co.courseId AND cr.userId = u.userId AND cr.passedDate IS NOT NULL
+			[$WHERECOURSEOREDITIONS$]
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseResultFinder.findCourseResultByParentCourseId">
+		<![CDATA[
+			SELECT 
+				lms_courseresult.*
+			FROM 
+				lms_courseresult
+			INNER JOIN 
+				lms_course 
+					ON lms_courseresult.courseId = lms_course.courseId
+			WHERE 
+				lms_course.parentCourseId = ? 
+				AND lms_courseresult.userId = ?;
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseResultFinder.whereCourseId">
+		<![CDATA[ 
+			WHERE co.courseId = ?
+		]]>
+	</sql>
+	<sql id="com.liferay.lms.service.persistence.CourseResultFinder.whereEditions">
+		<![CDATA[ 
+			WHERE (co.courseId = ? OR co.parentCourseId = ?)
+		]]>
+	</sql>
+</custom-sql>
